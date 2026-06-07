@@ -19,7 +19,7 @@ public class Main extends JFrame {
 
     public Main() {
         setTitle("Drawing Application");
-        setSize(1400, 1000);
+        setSize(1800, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         DrawingPanel drawingPanel = new DrawingPanel();
@@ -176,6 +176,7 @@ public class Main extends JFrame {
             int y2 = Integer.parseInt(y2Field.getText());
             selectedShape.updateParams(x1, y1, x2, y2);
             repaint();
+            updateTextFieldsPos(selectedShape);
         }
     }
 
@@ -369,12 +370,14 @@ public class Main extends JFrame {
         public int getHeight() { return height; }
     }
     static class Circle extends Shape {
-        private int x1, y1, radius;
+        private int x1, y1, x2, y2, radius;
         public Circle(int x1, int y1, int x2, int y2, Color color) {
             super(color);
             this.x1 = x1;
             this.y1 = y1;
             this.radius = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            this.x2 = x1+radius;
+            this.y2 = y1+radius;
         }
         @Override
         public void draw(Graphics g) {
@@ -385,6 +388,8 @@ public class Main extends JFrame {
         public void translate(int dx, int dy) {
             this.x1 += dx;
             this.y1 += dy;
+            this.x2 += dx;
+            this.y2 += dy;
         }
         @Override
         public boolean contains(int x, int y) {
@@ -404,16 +409,24 @@ public class Main extends JFrame {
         public void updateParams(int x1, int y1, int x2, int y2) {
             this.x1 = x1;
             this.y1 = y1;
-            this.radius = (int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            //this.x2 = x2;
+            //this.y2 = y2;
+            if (x2 == radius) {
+                this.radius = y2;
+            }
+            else {
+                this.radius = x2;
+            }
+            //this.radius = x2; //(int) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         }
         @Override
-        public int getX1() { return x1 - radius; }
+        public int getX1() { return x1; }//{ return x1 - radius; }
         @Override
-        public int getY1() { return y1 - radius; }
+        public int getY1() { return y1; }
         @Override
-        public int getX2() { return x1 + radius; }
+        public int getX2() { return radius; }
         @Override
-        public int getY2() { return y1 + radius; }
+        public int getY2() { return radius; }
         @Override
         public int getWidth() { return radius * 2; }
         @Override
